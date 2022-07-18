@@ -26,11 +26,14 @@
                 <MenuItem Click="MenuItem_OnClick" Header="Exit" />
             </MenuItem>
         </Menu>
+        <StatusBar DockPanel.Dock="Bottom">
+            <TextBlock x:Name="StatusTextBlock" />
+        </StatusBar>
         <ListView
             Width="140"
             DockPanel.Dock="Left"
             ItemsSource="{Binding Notebooks}"
-            SelectedItem="{Binding SelectedNotebook, Mode=TwoWay}">
+            SelectedValue="{Binding SelectedNotebook, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding Name}" />
@@ -49,9 +52,29 @@
         </ListView>
         <ToolBarTray DockPanel.Dock="Top">
             <ToolBar>
-                <Button Content="Speech" />
+                <Button
+                    x:Name="SpeechButton"
+                    Click="SpeechButton_OnClick"
+                    Content="Speech To Text" />
+                <ToggleButton x:Name="BoldButton" Click="BoldButton_OnClick">
+                    <TextBlock FontWeight="Bold" Text="B" />
+                </ToggleButton>
+                <ToggleButton x:Name="ItalicButton" Click="ItalicButton_OnClick">
+                    <TextBlock FontStyle="Italic" Text="I" />
+                </ToggleButton>
+                <ToggleButton x:Name="UnderlineButton" Click="UnderlineButton_OnClick">
+                    <TextBlock TextDecorations="Underline" Text="U" />
+                </ToggleButton>
+                <ComboBox x:Name="FontFamilyComboBox" Width="100" SelectionChanged="FontFamilyComboBox_OnSelectionChanged"/>
+                <ComboBox x:Name="FontSizeComboBox" Width="50" TextBoxBase.TextChanged="FontSizeComboBox_OnTextChanged"/>
             </ToolBar>
         </ToolBarTray>
-        <Grid />
+        <Grid>
+            <RichTextBox
+                x:Name="ContentRichTextbox"
+                SelectionChanged="ContentRichTextbox_OnSelectionChanged"
+                TextChanged="ContentRichTextbox_OnTextChanged" />
+        </Grid>
+
     </DockPanel>
 </Window>
