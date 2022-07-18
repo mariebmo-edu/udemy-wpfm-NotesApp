@@ -1,0 +1,19 @@
+﻿<UserControl
+    x:Class="NotesApp.View.UserControls.DisplayNotebook"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:NotesApp.View.UserControls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="75"
+    d:DesignWidth="300"
+    mc:Ignorable="d">
+    <Grid Margin="0,6">
+        <TextBlock
+            VerticalAlignment="Center"
+            FontSize="16"
+            FontWeight="Bold"
+            Foreground="White"
+            Text="{Binding Name}" />
+    </Grid>
+</UserControl>

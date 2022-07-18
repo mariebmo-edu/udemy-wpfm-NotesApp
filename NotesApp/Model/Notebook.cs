@@ -7,7 +7,7 @@ using SQLite;
 
 namespace NotesApp.Model
 {
-    internal class Notebook
+    public class Notebook
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
