@@ -7,14 +7,15 @@ using System.Windows.Input;
 
 namespace NotesApp.ViewModel.Commands
 {
-    public class NewNotebookCommand : ICommand
+    public class EditCommand : ICommand
     {
-        public NotesViewModel NotesViewModel { get; set; }
+        public NotesViewModel ViewModel { get; set; }
 
-        public NewNotebookCommand(NotesViewModel notesViewModel)
+        public EditCommand(NotesViewModel notesViewModel)
         {
-            NotesViewModel = notesViewModel;
+            ViewModel = notesViewModel;
         }
+
         public bool CanExecute(object? parameter)
         {
             return true;
@@ -22,7 +23,7 @@ namespace NotesApp.ViewModel.Commands
 
         public void Execute(object? parameter)
         {
-            NotesViewModel.CreateNotebook();
+            throw new NotImplementedException();
         }
 
         public event EventHandler? CanExecuteChanged;

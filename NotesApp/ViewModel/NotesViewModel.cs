@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using NotesApp.Annotations;
 using NotesApp.Model;
 using NotesApp.ViewModel.Commands;
@@ -13,13 +14,24 @@ using NotesApp.ViewModel.Helpers;
 
 namespace NotesApp.ViewModel
 {
-    internal class NotesViewModel : INotifyPropertyChanged
+    public class NotesViewModel : INotifyPropertyChanged
     {
         public ObservableCollection<Notebook> Notebooks { get; set; }
         public ObservableCollection<Note> Notes { get; set; }
 
+        private Visibility editNameVisibility = Visibility.Collapsed;
+
+        public Visibility EditNameVisibility
+        {
+            get => editNameVisibility;
+            set => editNameVisibility = value;
+        }
+
         public NewNotebookCommand NewNotebookCommand { get; set; }
         public NewNoteCommand NewNoteCommand { get; set; }
+        public EditCommand EditCommand { get; set; }
+        public EndEditingCommand EndEditingCommand { get; set; }
+
 
         private Notebook selectedNotebook;
 
@@ -27,9 +39,13 @@ namespace NotesApp.ViewModel
         {
             NewNotebookCommand = new NewNotebookCommand(this);
             NewNoteCommand = new NewNoteCommand(this);
+            EditCommand = new EditCommand(this);
+            EndEditingCommand = new EndEditingCommand(this);
 
             Notebooks = new ObservableCollection<Notebook>();
             Notes = new ObservableCollection<Note>();
+
+            EditNameVisibility = Visibility.Collapsed;
 
             GetNotebooks();
         }
@@ -101,6 +117,18 @@ namespace NotesApp.ViewModel
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public void StartEditing()
+        {
+            EditNameVisibility = Visibility.Visible;
+        }
+
+        public void StopEditing(Notebook notebook)
+        {
+            EditNameVisibility = Visibility.Collapsed;
+            DatabaseHelper.Update(notebook);
+            GetNotebooks();
         }
     }
 }

@@ -8,7 +8,7 @@ using NotesApp.Model;
 
 namespace NotesApp.ViewModel.Commands
 {
-    internal class NewNoteCommand : ICommand
+    public class NewNoteCommand : ICommand
     {
         public NotesViewModel NotesViewModel { get; set; }
 

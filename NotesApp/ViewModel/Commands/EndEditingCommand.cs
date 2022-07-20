@@ -4,25 +4,31 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using NotesApp.Model;
 
 namespace NotesApp.ViewModel.Commands
 {
-    public class NewNotebookCommand : ICommand
+    public class EndEditingCommand : ICommand
     {
-        public NotesViewModel NotesViewModel { get; set; }
+        private NotesViewModel NotesViewModel { get; set; }
 
-        public NewNotebookCommand(NotesViewModel notesViewModel)
+        public EndEditingCommand(NotesViewModel notesViewModel)
         {
             NotesViewModel = notesViewModel;
         }
+
         public bool CanExecute(object? parameter)
         {
-            return true;
+            throw new NotImplementedException();
         }
 
         public void Execute(object? parameter)
         {
-            NotesViewModel.CreateNotebook();
+            Notebook notebook = parameter as Notebook;
+            if (notebook != null)
+            {
+                NotesViewModel.StopEditing(notebook);
+            }
         }
 
         public event EventHandler? CanExecuteChanged;
