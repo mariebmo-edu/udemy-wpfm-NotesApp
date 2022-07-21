@@ -23,7 +23,7 @@ namespace NotesApp.ViewModel.Commands
 
         public void Execute(object? parameter)
         {
-            throw new NotImplementedException();
+            ViewModel.StartEditing();
         }
 
         public event EventHandler? CanExecuteChanged;

@@ -19,21 +19,21 @@ namespace NotesApp.ViewModel
         public ObservableCollection<Notebook> Notebooks { get; set; }
         public ObservableCollection<Note> Notes { get; set; }
 
-        private Visibility editNameVisibility = Visibility.Collapsed;
-
-        public Visibility EditNameVisibility
-        {
-            get => editNameVisibility;
-            set => editNameVisibility = value;
-        }
 
         public NewNotebookCommand NewNotebookCommand { get; set; }
         public NewNoteCommand NewNoteCommand { get; set; }
         public EditCommand EditCommand { get; set; }
         public EndEditingCommand EndEditingCommand { get; set; }
 
-
         private Notebook selectedNotebook;
+        private Note selectedNote;
+        public Visibility editNotebookNameVisibility { get; set; }
+
+        public event EventHandler SelectedNoteChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+
+
 
         public NotesViewModel()
         {
@@ -45,7 +45,7 @@ namespace NotesApp.ViewModel
             Notebooks = new ObservableCollection<Notebook>();
             Notes = new ObservableCollection<Note>();
 
-            EditNameVisibility = Visibility.Collapsed;
+            EditNotebookNameVisibility = Visibility.Collapsed;
 
             GetNotebooks();
         }
@@ -86,6 +86,27 @@ namespace NotesApp.ViewModel
             }
         }
 
+        public Note SelectedNote
+        {
+            get => selectedNote;
+            set
+            {
+                selectedNote = value;
+                OnPropertyChanged(nameof(SelectedNote));
+                SelectedNoteChanged?.Invoke(this, new EventArgs());
+            }
+        }
+
+        public Visibility EditNotebookNameVisibility
+        {
+            get { return editNotebookNameVisibility;}
+            set
+            {
+                editNotebookNameVisibility = value;
+                OnPropertyChanged(nameof(EditNotebookNameVisibility));
+            }
+        }
+
         private void GetNotebooks()
         {
             var notebooks = DatabaseHelper.Read<Notebook>();
@@ -111,8 +132,6 @@ namespace NotesApp.ViewModel
             }
         }
 
-        public event PropertyChangedEventHandler? PropertyChanged;
-
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
@@ -121,12 +140,12 @@ namespace NotesApp.ViewModel
 
         public void StartEditing()
         {
-            EditNameVisibility = Visibility.Visible;
+            EditNotebookNameVisibility = Visibility.Visible;
         }
 
         public void StopEditing(Notebook notebook)
         {
-            EditNameVisibility = Visibility.Collapsed;
+            EditNotebookNameVisibility = Visibility.Collapsed;
             DatabaseHelper.Update(notebook);
             GetNotebooks();
         }

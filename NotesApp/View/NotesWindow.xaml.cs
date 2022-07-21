@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +15,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Microsoft.CognitiveServices.Speech;
 using Microsoft.CognitiveServices.Speech.Audio;
+using NotesApp.ViewModel;
+using NotesApp.ViewModel.Helpers;
 
 namespace NotesApp.View
 {
@@ -22,15 +25,32 @@ namespace NotesApp.View
     /// </summary>
     public partial class NotesWindow : Window
     {
+        NotesViewModel viewModel;
+
         public NotesWindow()
         {
             InitializeComponent();
 
+            viewModel = Resources["ViewModel"] as NotesViewModel;
+            
+            viewModel.SelectedNoteChanged += ViewModel_SelectedNoteChanged;
+            
             var fontFamilies = Fonts.SystemFontFamilies.OrderBy(f => f.Source);
             FontFamilyComboBox.ItemsSource = fontFamilies;
 
-            List<Double> fontSizes = new List<double>() {8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24};
+            List<double> fontSizes = new List<double>() {8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24};
             FontSizeComboBox.ItemsSource = fontSizes;
+        }
+
+        private void ViewModel_SelectedNoteChanged(object? sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(viewModel.SelectedNote.FileLocation))
+            {
+                FileStream fileStream = new FileStream(viewModel.SelectedNote.FileLocation, FileMode.Open);
+                var contents = new TextRange(ContentRichTextbox.Document.ContentStart,
+                    ContentRichTextbox.Document.ContentEnd);
+                contents.Load(fileStream, DataFormats.Rtf);
+            }
         }
 
         private void MenuItem_OnClick(object sender, RoutedEventArgs e)
@@ -119,6 +139,18 @@ namespace NotesApp.View
                 (ContentRichTextbox.Selection.GetPropertyValue(Inline.TextDecorationsProperty) as TextDecorationCollection).TryRemove(TextDecorations.Underline, out textDecoration);
 ;                ContentRichTextbox.Selection.ApplyPropertyValue(Inline.TextDecorationsProperty, textDecoration);
             }
+        }
+
+        private void SaveButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            string rtfFile = System.IO.Path.Combine(Environment.CurrentDirectory, $"{viewModel.SelectedNote.Id}.rtf");
+            viewModel.SelectedNote.FileLocation = rtfFile;
+            DatabaseHelper.Update(viewModel.SelectedNote);
+
+            FileStream fileStream = new FileStream(rtfFile, FileMode.Create);
+            var contents = new TextRange(ContentRichTextbox.Document.ContentStart,
+                ContentRichTextbox.Document.ContentEnd);
+            contents.Save(fileStream, DataFormats.Rtf);
         }
 
         private void FontFamilyComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)

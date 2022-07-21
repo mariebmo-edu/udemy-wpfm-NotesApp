@@ -14,8 +14,11 @@
     mc:Ignorable="d">
 
     <Window.Resources>
-        <vm:NotesViewModel x:Key="ViewModel" />
+        <ResourceDictionary>
+            <vm:NotesViewModel x:Key="ViewModel" />
+        </ResourceDictionary>
     </Window.Resources>
+
     <DockPanel DataContext="{StaticResource ViewModel}">
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File">
@@ -47,7 +50,7 @@
                                 </ContextMenu>
                             </uc:DisplayNotebook.ContextMenu>
                         </uc:DisplayNotebook>
-                        <TextBox Text="{Binding Name, Mode=TwoWay}" Visibility="{Binding Source={StaticResource ViewModel}, Path=EditNameVisibility}">
+                        <TextBox Text="{Binding Name, Mode=TwoWay}" Visibility="{Binding Source={StaticResource ViewModel}, Path=EditNotebookNameVisibility}">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="LostFocus">
                                     <i:InvokeCommandAction Command="{Binding Source={StaticResource ViewModel}, Path=EndEditingCommand}" CommandParameter="{Binding}" />
@@ -61,7 +64,8 @@
         <ListView
             Width="140"
             DockPanel.Dock="Left"
-            ItemsSource="{Binding Notes}">
+            ItemsSource="{Binding Notes}"
+            SelectedValue="{Binding SelectedNote, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <uc:DisplayNote Note="{Binding}" />
@@ -71,18 +75,26 @@
         <ToolBarTray DockPanel.Dock="Top">
             <ToolBar>
                 <Button
+                    x:Name="SaveButton"
+                    Click="SaveButton_OnClick"
+                    Content="Save" />
+                <Button
                     x:Name="SpeechButton"
                     Click="SpeechButton_OnClick"
                     Content="Speech To Text" />
+
                 <ToggleButton x:Name="BoldButton" Click="BoldButton_OnClick">
                     <TextBlock FontWeight="Bold" Text="B" />
                 </ToggleButton>
+
                 <ToggleButton x:Name="ItalicButton" Click="ItalicButton_OnClick">
                     <TextBlock FontStyle="Italic" Text="I" />
                 </ToggleButton>
+
                 <ToggleButton x:Name="UnderlineButton" Click="UnderlineButton_OnClick">
                     <TextBlock Text="U" TextDecorations="Underline" />
                 </ToggleButton>
+
                 <ComboBox
                     x:Name="FontFamilyComboBox"
                     Width="100"
@@ -99,6 +111,5 @@
                 SelectionChanged="ContentRichTextbox_OnSelectionChanged"
                 TextChanged="ContentRichTextbox_OnTextChanged" />
         </Grid>
-
     </DockPanel>
 </Window>
