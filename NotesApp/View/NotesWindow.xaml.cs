@@ -44,12 +44,17 @@ namespace NotesApp.View
 
         private void ViewModel_SelectedNoteChanged(object? sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(viewModel.SelectedNote.FileLocation))
+            ContentRichTextbox.Document.Blocks.Clear();
+
+            if (viewModel.SelectedNote != null)
             {
-                FileStream fileStream = new FileStream(viewModel.SelectedNote.FileLocation, FileMode.Open);
-                var contents = new TextRange(ContentRichTextbox.Document.ContentStart,
-                    ContentRichTextbox.Document.ContentEnd);
-                contents.Load(fileStream, DataFormats.Rtf);
+                if (!string.IsNullOrEmpty(viewModel.SelectedNote.FileLocation))
+                {
+                    FileStream fileStream = new FileStream(viewModel.SelectedNote.FileLocation, FileMode.Open);
+                    var contents = new TextRange(ContentRichTextbox.Document.ContentStart,
+                        ContentRichTextbox.Document.ContentEnd);
+                    contents.Load(fileStream, DataFormats.Rtf);
+                }
             }
         }
 
